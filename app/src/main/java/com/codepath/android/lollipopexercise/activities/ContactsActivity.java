@@ -3,14 +3,17 @@ package com.codepath.android.lollipopexercise.activities;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.android.lollipopexercise.R;
 import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
 import com.codepath.android.lollipopexercise.models.Contact;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -46,6 +49,27 @@ public class ContactsActivity extends AppCompatActivity {
 
         // Bind adapter to list
         rvContacts.setAdapter(mAdapter);
+
+    }
+
+    public void onAddContactAction(MenuItem mi) {
+        Contact contact = Contact.getRandomContact(this);
+        contacts.add(0, contact);
+        mAdapter.notifyItemInserted(0);
+        rvContacts.smoothScrollToPosition(0);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                contacts.remove(0);
+                mAdapter.notifyItemRemoved(0);
+            }
+        };
+
+        Snackbar.make(rvContacts, "Add", Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(ContactsActivity.this, R.color.accent))
+                .setAction("Undo", onClickListener)
+                .show();
     }
 
     @Override
